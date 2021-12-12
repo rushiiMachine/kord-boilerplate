@@ -2,6 +2,7 @@ package bot
 
 import bot.commands.BanExtension
 import bot.commands.KickExtension
+import bot.commands.PurgeExtension
 import bot.events.MemberLogExtension
 import bot.events.ReadyExtension
 import com.kotlindiscord.kord.extensions.ExtensibleBot
@@ -37,6 +38,7 @@ suspend fun main() {
         extensions {
             add(::KickExtension)
             add(::BanExtension)
+            add(::PurgeExtension)
 
             add(::ReadyExtension)
             add(::MemberLogExtension)
