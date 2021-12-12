@@ -3,6 +3,7 @@
 package bot.commands
 
 import bot.WARNING
+import bot.configureAuthor
 import com.kotlindiscord.kord.extensions.checks.anyGuild
 import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -40,15 +41,9 @@ class KickExtension : Extension() {
                 respond {
                     val target = arguments.target
                     embed {
-                        color = Color.WARNING
                         timestamp = Clock.System.now()
-                        author {
-                            name = "${author.tag} (${author.id})"
-                            icon = (author.avatar ?: author.defaultAvatar).cdnUrl.toUrl {
-                                format = Image.Format.PNG
-                                Image.Size.Size64
-                            }
-                        }
+                        configureAuthor(author)
+                        color = Color.WARNING
                         description = """
                             **Member:** `${target.tag}` (${target.id})
                             **Action:** Kick

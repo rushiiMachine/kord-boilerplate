@@ -3,6 +3,8 @@ package bot
 import com.kotlindiscord.kord.extensions.utils.createdAt
 import dev.kord.common.Color
 import dev.kord.core.entity.User
+import dev.kord.rest.Image
+import dev.kord.rest.builder.message.EmbedBuilder
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.days
@@ -35,3 +37,17 @@ val Instant.discordTimestamp: String
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun condStr(condition: Boolean, value: String?): String = if (condition) value ?: "null" else ""
+
+fun User.displayAvatar(size: Image.Size = Image.Size.Size64, format: Image.Format = Image.Format.PNG): String {
+    return (avatar ?: defaultAvatar).cdnUrl.toUrl {
+        this.format = format
+        this.size = size
+    }
+}
+
+fun EmbedBuilder.configureAuthor(user: User) {
+    author {
+        name = "${user.tag} (${user.id})"
+        icon = user.displayAvatar()
+    }
+}

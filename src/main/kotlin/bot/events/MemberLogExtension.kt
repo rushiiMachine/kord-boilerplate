@@ -1,9 +1,6 @@
 package bot.events
 
-import bot.NO_ACTION
-import bot.condStr
-import bot.discordTimestamp
-import bot.embedColorFromUser
+import bot.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.utils.createdAt
@@ -28,13 +25,7 @@ class MemberLogExtension : Extension() {
     private suspend fun generateLog(user: User, targetChannel: TextChannel, joinedAt: Instant?) {
         targetChannel.createEmbed {
             color = if (joinedAt != null) embedColorFromUser(user) else Color.NO_ACTION
-            author {
-                name = "${user.tag} (${user.id})"
-                icon = (user.avatar ?: user.defaultAvatar).cdnUrl.toUrl {
-                    format = Image.Format.PNG
-                    Image.Size.Size64
-                }
-            }
+            configureAuthor(user)
             footer {
                 text = if (joinedAt != null) "User joined" else "User left"
             }

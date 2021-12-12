@@ -3,6 +3,7 @@
 package bot.commands
 
 import bot.ERROR
+import bot.configureAuthor
 import com.kotlindiscord.kord.extensions.checks.anyGuild
 import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -45,15 +46,9 @@ class BanExtension : Extension() {
                 respond {
                     val target = arguments.target
                     embed {
-                        color = Color.ERROR
                         timestamp = Clock.System.now()
-                        author {
-                            name = "${author.tag} (${author.id})"
-                            icon = (author.avatar ?: author.defaultAvatar).cdnUrl.toUrl {
-                                format = Image.Format.PNG
-                                Image.Size.Size64
-                            }
-                        }
+                        configureAuthor(author)
+                        color = Color.ERROR
                         description = """
                             **Member:** `${target.tag}` (${target.id})
                             **Action:** Ban
