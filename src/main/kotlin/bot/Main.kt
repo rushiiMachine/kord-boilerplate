@@ -2,6 +2,7 @@ package bot
 
 import bot.commands.BanExtension
 import bot.commands.KickExtension
+import bot.events.MemberLogExtension
 import bot.events.ReadyExtension
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import dev.kord.gateway.Intent
@@ -38,6 +39,7 @@ suspend fun main() {
             add(::BanExtension)
 
             add(::ReadyExtension)
+            add(::MemberLogExtension)
         }
 
 //        applicationCommandsBuilder.defaultGuild(Snowflake(676284863967526928L))
