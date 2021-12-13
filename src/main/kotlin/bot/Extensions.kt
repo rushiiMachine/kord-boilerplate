@@ -107,3 +107,10 @@ fun Icon.toUrl(size: Image.Size = Image.Size.Size64, format: Image.Format = Imag
     this.size = size
     this.format = format
 }
+
+/** Pluralize the string if count is not 1 */
+fun String.pluralize(count: Int): String {
+    return if (count != 1)
+        this.plus("s")
+    else this
+}

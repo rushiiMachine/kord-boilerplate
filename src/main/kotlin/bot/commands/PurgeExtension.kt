@@ -1,5 +1,7 @@
 package bot.commands
 
+import bot.configureAuthor
+import bot.pluralize
 import com.kotlindiscord.kord.extensions.checks.anyGuild
 import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -10,6 +12,7 @@ import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
+import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.json.request.BulkDeleteRequest
 import kotlinx.coroutines.flow.toList
 import kotlinx.datetime.Clock
@@ -22,8 +25,8 @@ class PurgeExtension : Extension() {
 
     override suspend fun setup() {
         ephemeralSlashCommand(::BanArgs) {
-            name = this@PurgeExtension.name
-            description = "Purge"
+            name = "purge"
+            description = "Purge latest messages from this channel"
             requireBotPermissions(Permission.ManageMessages, Permission.ReadMessageHistory)
 
             check {
@@ -40,27 +43,37 @@ class PurgeExtension : Extension() {
                 val (messages, oldMessages) = channel.getMessagesBefore(Snowflake.max, arguments.count).toList()
                     .partition { it.timestamp > limit }
 
+                // TODO: errors if not enough messages in `messages` even though targeted amount is higher
                 channel.kord.rest.channel.bulkDelete(channel.id,
                     BulkDeleteRequest(messages.map { it.id }),
                     "Purge by ${author.tag} (${author.id}) with reason: $providedReason")
 
                 // TODO: count bot messages ??
                 val authors = messages // Message[]
-                    .mapNotNull { it.author?.id?.value } // Snowflake[] message author ids
+                    .map { it.author?.id?.value } // Snowflake[] message author ids
                     .groupBy { it } // Map<Snowflake, Snowflake[] all instances of that snowflake>
                     .entries.associateBy({ it.value.size }) { it.key } // Map<instances count, Snowflake>
                     .toSortedMap(Comparator.reverseOrder()) // Sort by instance count
                     .entries.take(10) // Take top 10
 
                 respond {
-                    content = "Purged ${messages.size} total messages."
-                    if (arguments.count > 100)
-                        content += " *Limited to 100 messages.*"
-                    if (oldMessages.isNotEmpty())
-                        content += "\n*This purge targeted messages older than 14 days which were ignored.*"
-                    if (authors.isNotEmpty()) {
-                        content += "\n\nTop message authors:\n"
-                        content += authors.joinToString("\n") { "<@${it.value}>: ${it.key} messages" }
+                    embed {
+                        configureAuthor(user.asUser())
+
+                        description = "Purged ${messages.size} total messages."
+                        if (arguments.count > 100)
+                            description += " *(Limited to 100)*"
+                        if (oldMessages.isNotEmpty())
+                            description += "\n*This purge targeted messages older than 14 days which were ignored.*"
+
+                        if (authors.isNotEmpty()) field {
+                            name = "❯ Top message authors"
+                            value = authors.joinToString("\n")
+                            {
+                                val id = if (it.value != null) "<@${it.value}>" else "Unknown"
+                                "• $id: ${it.key} ${"message".pluralize(it.key)}"
+                            }
+                        }
                     }
                 }
             }
