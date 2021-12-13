@@ -1,9 +1,6 @@
 package bot
 
-import bot.commands.BanExtension
-import bot.commands.KickExtension
-import bot.commands.PurgeExtension
-import bot.commands.UserExtension
+import bot.commands.*
 import bot.events.MemberLogExtension
 import bot.events.ReadyExtension
 import com.kotlindiscord.kord.extensions.ExtensibleBot
@@ -37,13 +34,14 @@ suspend fun main() {
         }
 
         extensions {
-            add(::KickExtension)
             add(::BanExtension)
+            add(::EchoExtension)
+            add(::KickExtension)
             add(::PurgeExtension)
             add(::UserExtension)
 
-            add(::ReadyExtension)
             add(::MemberLogExtension)
+            add(::ReadyExtension)
         }
 
         // Make all slash commands guild commands
