@@ -10,9 +10,7 @@ import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.types.respondEphemeral
 import com.kotlindiscord.kord.extensions.utils.createdAt
 import dev.kord.common.entity.Snowflake
-import dev.kord.common.entity.kordLogger
 import dev.kord.core.behavior.RoleBehavior
-import dev.kord.core.cache.data.toData
 import dev.kord.core.entity.User
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.rest.builder.message.create.embed
@@ -24,7 +22,7 @@ class UserExtension : Extension() {
     override suspend fun setup() {
         publicSlashCommand(::UserArgs) {
             name = this@UserExtension.name
-            description = "Lookup details on a specific user"
+            description = "Lookup details on a specific user. Defaults to you"
 
             action {
                 val target: User?

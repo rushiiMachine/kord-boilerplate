@@ -44,6 +44,7 @@ class PurgeExtension : Extension() {
                     BulkDeleteRequest(messages.map { it.id }),
                     "Purge by ${author.tag} (${author.id}) with reason: $providedReason")
 
+                // TODO: count bot messages ??
                 val authors = messages // Message[]
                     .mapNotNull { it.author?.id?.value } // Snowflake[] message author ids
                     .groupBy { it } // Map<Snowflake, Snowflake[] all instances of that snowflake>

@@ -14,7 +14,6 @@ import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.Color
 import dev.kord.common.entity.Permission
-import dev.kord.rest.Image
 import dev.kord.rest.builder.message.create.embed
 import kotlinx.datetime.Clock
 

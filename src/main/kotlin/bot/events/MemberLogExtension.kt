@@ -1,6 +1,9 @@
 package bot.events
 
-import bot.*
+import bot.NO_ACTION
+import bot.configureAuthor
+import bot.discord
+import bot.embedColorFromUser
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.utils.createdAt
