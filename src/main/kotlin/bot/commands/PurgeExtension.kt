@@ -10,7 +10,6 @@ import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.kordLogger
 import dev.kord.rest.json.request.BulkDeleteRequest
 import kotlinx.coroutines.flow.toList
 import kotlinx.datetime.Clock

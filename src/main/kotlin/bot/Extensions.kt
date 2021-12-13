@@ -1,10 +1,14 @@
 package bot
 
+import com.kotlindiscord.kord.extensions.types.PublicInteractionContext
 import com.kotlindiscord.kord.extensions.utils.createdAt
 import dev.kord.common.Color
+import dev.kord.core.behavior.interaction.followUp
+import dev.kord.core.entity.Icon
 import dev.kord.core.entity.User
 import dev.kord.rest.Image
 import dev.kord.rest.builder.message.EmbedBuilder
+import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.days
@@ -22,6 +26,10 @@ val Color.Companion.CONFIRM
 val Color.Companion.NO_ACTION
     get() = Color(47, 49, 54)
 
+/**
+ * Get color from a user account's creation date,
+ * More red meaning higher chance it's a bot.
+ */
 @OptIn(ExperimentalTime::class)
 fun embedColorFromUser(user: User): Color {
     val duration = Clock.System.now() - user.createdAt
@@ -32,12 +40,21 @@ fun embedColorFromUser(user: User): Color {
     }
 }
 
-val Instant.discordTimestamp: String
+val Instant.discord: String
     get() = "<t:${epochSeconds}>"
+
+val Instant.discordRelative: String
+    get() = "<t:${epochSeconds}:R>"
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun condStr(condition: Boolean, value: String?): String = if (condition) value ?: "null" else ""
 
+/** Invokes callback to make lazy string if value not null, else returns empty string */
+fun <T> condStr(value: T?, lazy: (T) -> String): String = if (value != null) lazy.invoke(value) else ""
+
+/**
+ * Display avatar; their avatar or the default avatar
+ */
 fun User.displayAvatar(size: Image.Size = Image.Size.Size64, format: Image.Format = Image.Format.PNG): String {
     return (avatar ?: defaultAvatar).cdnUrl.toUrl {
         this.format = format
@@ -45,9 +62,48 @@ fun User.displayAvatar(size: Image.Size = Image.Size.Size64, format: Image.Forma
     }
 }
 
+/**
+ * Set the author text to "User#000 (userid)"
+ * and author icon to their avatar
+ */
 fun EmbedBuilder.configureAuthor(user: User) {
     author {
         name = "${user.tag} (${user.id})"
         icon = user.displayAvatar()
     }
+}
+
+/** Follow up with a message returning void */
+suspend inline fun PublicInteractionContext.respondV(
+    builder: FollowupMessageCreateBuilder.() -> Unit,
+) {
+    interactionResponse.followUp(builder)
+}
+
+/** Follow up with an ephemeral message returning void */
+suspend inline fun PublicInteractionContext.respondEV(
+    builder: FollowupMessageCreateBuilder.() -> Unit,
+) {
+    interactionResponse.followUp(builder)
+}
+
+/** Wrap a string in a single-line codeblock */
+@Suppress("NOTHING_TO_INLINE")
+inline fun code(str: String?) = "`${str}`"
+
+/** Wrap a string in a single-line codeblock, if null then default */
+@Suppress("NOTHING_TO_INLINE")
+inline fun code(str: String?, default: String) = if (str != null) code(str) else default
+
+/** Wrap each string in a single-line codeblock or default if list empty/null */
+fun code(strings: List<String>?, default: String) =
+    if (strings == null || strings.isEmpty()) default else strings.joinToString { code(it) }
+
+/** Join a list together or default if list is empty */
+fun joinList(list: List<String>, default: String) = if (list.isEmpty()) default else list.joinToString()
+
+/** Shortcut for Icon.cdnUrl.toUrl { options } */
+fun Icon.toUrl(size: Image.Size = Image.Size.Size64, format: Image.Format = Image.Format.PNG): String = cdnUrl.toUrl {
+    this.size = size
+    this.format = format
 }

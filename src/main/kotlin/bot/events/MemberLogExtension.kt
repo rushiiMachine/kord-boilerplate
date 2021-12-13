@@ -12,7 +12,6 @@ import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.guild.MemberLeaveEvent
 import dev.kord.core.supplier.EntitySupplyStrategy
-import dev.kord.rest.Image
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
@@ -31,8 +30,8 @@ class MemberLogExtension : Extension() {
             }
             description = """
                 • User: ${user.mention} `${user.tag}` (${user.id})
-                • Created: ${user.createdAt.discordTimestamp}
-                ${if (joinedAt == null) "• Left ${Clock.System.now().discordTimestamp}" else "• Joined ${joinedAt.discordTimestamp}"}
+                • Created: ${user.createdAt.discord}
+                ${if (joinedAt == null) "• Left ${Clock.System.now().discord}" else "• Joined ${joinedAt.discord}"}
             """.trimIndent()
         }
     }

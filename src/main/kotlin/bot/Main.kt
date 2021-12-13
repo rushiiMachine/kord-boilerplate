@@ -3,6 +3,7 @@ package bot
 import bot.commands.BanExtension
 import bot.commands.KickExtension
 import bot.commands.PurgeExtension
+import bot.commands.UserExtension
 import bot.events.MemberLogExtension
 import bot.events.ReadyExtension
 import com.kotlindiscord.kord.extensions.ExtensibleBot
@@ -39,11 +40,13 @@ suspend fun main() {
             add(::KickExtension)
             add(::BanExtension)
             add(::PurgeExtension)
+            add(::UserExtension)
 
             add(::ReadyExtension)
             add(::MemberLogExtension)
         }
 
+        // Make all slash commands guild commands
 //        applicationCommandsBuilder.defaultGuild(Snowflake(676284863967526928L))
     }
 
