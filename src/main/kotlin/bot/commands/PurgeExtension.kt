@@ -1,5 +1,6 @@
 package bot.commands
 
+import bot.NO_ACTION
 import bot.configureAuthor
 import bot.pluralize
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
@@ -11,6 +12,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
+import dev.kord.common.Color
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Message
@@ -52,9 +54,8 @@ class PurgeExtension : Extension() {
                         BulkDeleteRequest(messages.map(Message::id)), reason)
                 }
 
-                // TODO: count bot messages ??
                 val authors = messages // Message[]
-                    .map { it.author?.id?.value } // Snowflake[] message author ids
+                    .map { it.data.author.id } // Snowflake[] message author ids
                     .groupBy { it } // Map<Snowflake, Snowflake[] all instances of that snowflake>
                     .entries.associateBy({ it.value.size }) { it.key } // Map<instances count, Snowflake>
                     .toSortedMap(Comparator.reverseOrder()) // Sort by instance count
@@ -62,6 +63,7 @@ class PurgeExtension : Extension() {
 
                 respond {
                     embed {
+                        color = Color.NO_ACTION
                         configureAuthor(user.asUser())
 
                         description = "Purged ${messages.size} total messages."
