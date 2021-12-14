@@ -2,6 +2,7 @@ package bot.commands
 
 import bot.configureAuthor
 import bot.pluralize
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.checks.anyGuild
 import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -12,6 +13,7 @@ import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.Message
 import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.json.request.BulkDeleteRequest
 import kotlinx.coroutines.flow.toList
@@ -32,7 +34,6 @@ class PurgeExtension : Extension() {
             check {
                 anyGuild()
                 hasPermission(Permission.ManageMessages)
-                // TODO: prevent purging less than 2
             }
 
             action {
@@ -43,10 +44,13 @@ class PurgeExtension : Extension() {
                 val (messages, oldMessages) = channel.getMessagesBefore(Snowflake.max, arguments.count).toList()
                     .partition { it.timestamp > limit }
 
-                // TODO: errors if not enough messages in `messages` even though targeted amount is higher
-                channel.kord.rest.channel.bulkDelete(channel.id,
-                    BulkDeleteRequest(messages.map { it.id }),
-                    "Purge by ${author.tag} (${author.id}) with reason: $providedReason")
+                val reason = "Purge by ${author.tag} (${author.id}) with reason: $providedReason"
+                if (messages.size == 1)
+                    channel.deleteMessage(messages.first().id, reason)
+                else if (messages.size > 1) {
+                    channel.kord.rest.channel.bulkDelete(channel.id,
+                        BulkDeleteRequest(messages.map(Message::id)), reason)
+                }
 
                 // TODO: count bot messages ??
                 val authors = messages // Message[]
@@ -81,7 +85,14 @@ class PurgeExtension : Extension() {
     }
 
     inner class BanArgs : Arguments() {
-        val count by defaultingInt("count", "Number of messages to delete (Range: 2-100)", 5)
+        val count by defaultingInt("count",
+            "Number of messages to delete (Range: 1-100)",
+            5,
+            required = true // Require validator to pass
+        ) { _, value ->
+            if (value == 0)
+                throw DiscordRelayedException("You cannot purge 0 messages!")
+        }
         val reason by optionalString("reason", "Purge reason")
     }
 }
