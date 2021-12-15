@@ -32,9 +32,7 @@ class UserExtension : Extension() {
                 else if (arguments.id != null) {
                     val id = arguments.id!!.toULongOrNull()
                     if (id == null) {
-                        respondEphemeral {
-                            content = "The supplied user id is invalid!"
-                        }
+                        respondEphemeral { content = i18n("bot.user.errors.id") }
                         return@action
                     }
 
@@ -44,9 +42,7 @@ class UserExtension : Extension() {
                 }
 
                 if (target == null) {
-                    respondEphemeral {
-                        content = "Failed to retrieve the target user. Please try again later."
-                    }
+                    respondEphemeral { content = i18n("bot.user.errors.fetch") }
                     return@action
                 }
 
@@ -59,16 +55,14 @@ class UserExtension : Extension() {
                             url = target.displayAvatar()
                         }
                         field {
-                            name = "❯ User"
-                            value = """
-                                • Username: `${target.tag}`
-                                • ID: `${target.id}`
-                                • Created: ${target.createdAt.discord} ${target.createdAt.discordRelative}
-                            """.trimIndent()
+                            name = i18n("bot.user.embed.user.header")
+                            value = i18n("bot.user.embed.user.content",
+                                target.tag, target.id, target.createdAt.discord, target.createdAt.discordRelative)
                         }
 
                         if (member != null) field {
-                            name = "❯ Member"
+                            name = i18n("bot.user.embed.member.header")
+                            // TODO: i18n for this too
                             value = """
                                 • Nickname: ${code(member.nickname, "None")}
                                 • Roles: ${joinList(member.roles.toList().map(RoleBehavior::mention), "None")}

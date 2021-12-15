@@ -1,5 +1,6 @@
 package bot
 
+import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.types.PublicInteractionContext
 import com.kotlindiscord.kord.extensions.utils.createdAt
 import dev.kord.common.Color
@@ -109,8 +110,15 @@ fun Icon.toUrl(size: Image.Size = Image.Size.Size64, format: Image.Format = Imag
 }
 
 /** Pluralize the string if count is not 1 */
-fun String.pluralize(count: Int): String {
-    return if (count != 1)
-        this.plus("s")
-    else this
-}
+//fun String.pluralize(count: Int): String {
+//    return if (count != 1)
+//        this.plus("s")
+//    else this
+//}
+
+/* Shortcut for translations */
+suspend fun CommandContext.i18n(key: String, vararg replacements: Any?) = translate(key, arrayOf(*replacements))
+
+/* Pluralize a string from translations. Targets key or key + ".pluralized" if plural */
+suspend fun CommandContext.i18nPluralize(key: String, count: Int) =
+    translate(if (count == 1) key else "$key.pluralized")

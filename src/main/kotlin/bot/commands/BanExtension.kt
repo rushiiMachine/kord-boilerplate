@@ -4,6 +4,7 @@ package bot.commands
 
 import bot.ERROR
 import bot.configureAuthor
+import bot.i18n
 import com.kotlindiscord.kord.extensions.checks.anyGuild
 import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -34,11 +35,12 @@ class BanExtension : Extension() {
             }
 
             action {
-                val providedReason = arguments.reason ?: "None"
+                val providedReason = arguments.reason ?: i18n("bot.words.none")
                 val author = user.asUser()
 
                 guild!!.ban(arguments.target.id) {
-                    reason = "Banned by ${author.tag} (${author.id}) with reason: $providedReason"
+                    translate("")
+                    reason = i18n("bot.ban.reason", author.tag, author.id, providedReason)
                     deleteMessagesDays = arguments.deleteMessages?.toInt()
                 }
 
@@ -48,11 +50,8 @@ class BanExtension : Extension() {
                         timestamp = Clock.System.now()
                         configureAuthor(author)
                         color = Color.ERROR
-                        description = """
-                            **Member:** `${target.tag}` (${target.id})
-                            **Action:** Ban
-                            **Reason:** $providedReason
-                        """.trimIndent()
+                        description = i18n("bot.ban.embed",
+                            target.tag, target.id, providedReason)
                     }
                 }
             }

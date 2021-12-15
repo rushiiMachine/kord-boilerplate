@@ -11,6 +11,7 @@ If you want something to be added, please open an issue
 here [here](https://github.com/DiamondMiner88/kord-boilerplate/issues)
 
 - .env Config
+- I18n support
 - [Exposed](https://github.com/JetBrains/Exposed) SQL framework integration (soon)
 - Button roles (soon)
 - Reaction roles (soon)

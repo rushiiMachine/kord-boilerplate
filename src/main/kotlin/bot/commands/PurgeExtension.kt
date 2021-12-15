@@ -2,7 +2,7 @@ package bot.commands
 
 import bot.NO_ACTION
 import bot.configureAuthor
-import bot.pluralize
+import bot.i18n
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.checks.anyGuild
 import com.kotlindiscord.kord.extensions.checks.hasPermission
@@ -39,14 +39,14 @@ class PurgeExtension : Extension() {
             }
 
             action {
-                val providedReason = arguments.reason ?: "None"
+                val providedReason = arguments.reason ?: i18n("bot.words.none")
                 val author = user.asUser()
 
                 val limit = Clock.System.now() - 14.days
                 val (messages, oldMessages) = channel.getMessagesBefore(Snowflake.max, arguments.count).toList()
                     .partition { it.timestamp > limit }
 
-                val reason = "Purge by ${author.tag} (${author.id}) with reason: $providedReason"
+                val reason = i18n("bot.purge.reason", author.tag, author.id, providedReason)
                 if (messages.size == 1)
                     channel.deleteMessage(messages.first().id, reason)
                 else if (messages.size > 1) {
@@ -66,19 +66,18 @@ class PurgeExtension : Extension() {
                         color = Color.NO_ACTION
                         configureAuthor(user.asUser())
 
-                        description = "Purged ${messages.size} total messages."
+                        description = i18n("bot.purge.embed.count", messages.size)
                         if (arguments.count > 100)
-                            description += " *(Limited to 100)*"
+                            description += i18n("bot.purge.embed.limited")
                         if (oldMessages.isNotEmpty())
-                            description += "\n*This purge targeted messages older than 14 days which were ignored.*"
+                            description += i18n("bot.purge.embed.old")
 
                         if (authors.isNotEmpty()) field {
-                            name = "❯ Top message authors"
+                            val strMessage = i18n("bot.words.message")
+                            val strMessages = i18n("bot.words.message.pluralized")
+                            name = i18n("bot.purge.embed.topAuthors")
                             value = authors.joinToString("\n")
-                            {
-                                val id = if (it.value != null) "<@${it.value}>" else "Unknown"
-                                "• $id: ${it.key} ${"message".pluralize(it.key)}"
-                            }
+                            { "• <@${it.value}>: ${it.key} ${if (it.key == 1) strMessage else strMessages}" }
                         }
                     }
                 }
@@ -93,7 +92,7 @@ class PurgeExtension : Extension() {
             required = true // Require validator to pass
         ) { _, value ->
             if (value == 0)
-                throw DiscordRelayedException("You cannot purge 0 messages!")
+                throw DiscordRelayedException(i18n("bot.purge.errors.zeroPurged"))
         }
         val reason by optionalString("reason", "Purge reason")
     }

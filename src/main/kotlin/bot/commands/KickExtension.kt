@@ -4,6 +4,7 @@ package bot.commands
 
 import bot.WARNING
 import bot.configureAuthor
+import bot.i18n
 import com.kotlindiscord.kord.extensions.checks.anyGuild
 import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -35,7 +36,7 @@ class KickExtension : Extension() {
                 val reason = arguments.reason ?: "None"
                 val author = user.asUser()
 
-                guild!!.kick(arguments.target.id, "Kicked by ${author.tag} (${author.id}) with reason: $reason")
+//                guild!!.kick(arguments.target.id, i18n("bot.kick.reason", author.tag, author.id, reason))
 
                 respond {
                     val target = arguments.target
@@ -43,11 +44,8 @@ class KickExtension : Extension() {
                         timestamp = Clock.System.now()
                         configureAuthor(author)
                         color = Color.WARNING
-                        description = """
-                            **Member:** `${target.tag}` (${target.id})
-                            **Action:** Kick
-                            **Reason:** $reason
-                        """.trimIndent()
+                        description = i18n("bot.kick.embed",
+                            target.tag, target.id, reason)
                     }
                 }
             }
