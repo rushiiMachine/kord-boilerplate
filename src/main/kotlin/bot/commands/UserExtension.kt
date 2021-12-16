@@ -13,6 +13,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.entity.User
 import dev.kord.core.supplier.EntitySupplyStrategy
+import dev.kord.rest.Image
 import dev.kord.rest.builder.message.create.embed
 import kotlinx.coroutines.flow.toList
 
@@ -62,15 +63,29 @@ class UserExtension : Extension() {
 
                         if (member != null) field {
                             name = i18n("bot.user.embed.member.header")
-                            // TODO: i18n for this too
-                            value = """
-                                • Nickname: ${code(member.nickname, "None")}
-                                • Roles: ${joinList(member.roles.toList().map(RoleBehavior::mention), "None")}
-                                • Joined: ${member.joinedAt.discord} ${member.joinedAt.discordRelative}
-                                ${condStr(member.premiumSince) { "• Boosting: ${it.discord} ${it.discordRelative}" }}
-                                ${condStr(member.accentColor) { "• Color: `#${it.rgb.toString(16)}`" }}
-                                ${condStr(member.memberAvatar) { "• Server Avatar: [Link](${it.toUrl()})" }}
-                            """.trimIndent()
+                            val strNone = i18n("bot.words.none")
+                            value = i18n("bot.user.embed.member.content",
+                                code(member.nickname, value),
+                                joinList(member.roles.toList().map(RoleBehavior::mention), strNone),
+                                member.joinedAt.discord,
+                                member.joinedAt.discordRelative
+                            )
+
+                            value += condStr(member.premiumSince) {
+                                i18n("bot.user.embed.member.content.boosting",
+                                    it.discord,
+                                    it.discordRelative)
+                            }
+
+                            value += condStr(member.accentColor) {
+                                i18n("bot.user.embed.member.content.color",
+                                    it.rgb.toString(16))
+                            }
+
+                            value += condStr(member.memberAvatar) {
+                                i18n("bot.user.embed.member.content.avatar",
+                                    it.toUrl(Image.Size.Size128))
+                            }
                         }
                     }
                 }

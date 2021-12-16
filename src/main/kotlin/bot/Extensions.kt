@@ -51,7 +51,7 @@ val Instant.discordRelative: String
 inline fun condStr(condition: Boolean, value: String?): String = if (condition) value ?: "null" else ""
 
 /** Invokes callback to make lazy string if value not null, else returns empty string */
-fun <T> condStr(value: T?, lazy: (T) -> String): String = if (value != null) lazy.invoke(value) else ""
+suspend fun <T> condStr(value: T?, lazy: suspend (T) -> String): String = if (value != null) lazy.invoke(value) else ""
 
 /**
  * Display avatar; their avatar or the default avatar

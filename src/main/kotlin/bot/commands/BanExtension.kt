@@ -39,7 +39,6 @@ class BanExtension : Extension() {
                 val author = user.asUser()
 
                 guild!!.ban(arguments.target.id) {
-                    translate("")
                     reason = i18n("bot.ban.reason", author.tag, author.id, providedReason)
                     deleteMessagesDays = arguments.deleteMessages?.toInt()
                 }

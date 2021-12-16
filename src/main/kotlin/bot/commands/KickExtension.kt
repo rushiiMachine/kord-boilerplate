@@ -36,7 +36,7 @@ class KickExtension : Extension() {
                 val reason = arguments.reason ?: "None"
                 val author = user.asUser()
 
-//                guild!!.kick(arguments.target.id, i18n("bot.kick.reason", author.tag, author.id, reason))
+                guild!!.kick(arguments.target.id, i18n("bot.kick.reason", author.tag, author.id, reason))
 
                 respond {
                     val target = arguments.target

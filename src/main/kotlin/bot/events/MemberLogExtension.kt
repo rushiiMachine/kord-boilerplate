@@ -42,7 +42,7 @@ class MemberLogExtension : Extension() {
     override suspend fun setup() {
         val channel =
             kord.getChannelOf<TextChannel>(Snowflake(channelId), EntitySupplyStrategy.cacheWithCachingRestFallback)
-                ?: error("Failed to fetch member log channel. Please provide a valid id.")
+                ?: error("Failed to fetch member log channel. Please provide a valid text channel id.")
 
         event<MemberJoinEvent> {
             action {
