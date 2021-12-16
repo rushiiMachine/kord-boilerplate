@@ -6,10 +6,12 @@ import com.kotlindiscord.kord.extensions.utils.createdAt
 import dev.kord.common.Color
 import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.entity.Icon
+import dev.kord.core.entity.Member
 import dev.kord.core.entity.User
 import dev.kord.rest.Image
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
+import kotlinx.coroutines.flow.toList
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.days
@@ -122,3 +124,8 @@ suspend fun CommandContext.i18n(key: String, vararg replacements: Any?) = transl
 /* Pluralize a string from translations. Targets key or key + ".pluralized" if plural */
 suspend fun CommandContext.i18nPluralize(key: String, count: Int) =
     translate(if (count == 1) key else "$key.pluralized")
+
+/** Get the visible color (if any) for this member */
+suspend fun Member.getColor(): Color? = roles.toList()
+    .toSortedSet(Comparator.comparing { -it.rawPosition })
+    .firstOrNull { it.color.rgb != 0 }?.color

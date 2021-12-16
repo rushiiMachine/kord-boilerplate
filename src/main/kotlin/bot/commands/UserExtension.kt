@@ -63,6 +63,7 @@ class UserExtension : Extension() {
 
                         if (member != null) field {
                             name = i18n("bot.user.embed.member.header")
+
                             val strNone = i18n("bot.words.none")
                             value = i18n("bot.user.embed.member.content",
                                 code(member.nickname, value),
@@ -77,7 +78,7 @@ class UserExtension : Extension() {
                                     it.discordRelative)
                             }
 
-                            value += condStr(member.accentColor) {
+                            value += condStr(member.getColor()) {
                                 i18n("bot.user.embed.member.content.color",
                                     it.rgb.toString(16))
                             }
