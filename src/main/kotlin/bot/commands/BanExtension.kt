@@ -4,7 +4,9 @@ package bot.commands
 
 import bot.ERROR
 import bot.configureAuthor
+import bot.higherThan
 import bot.i18n
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.checks.anyGuild
 import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -14,6 +16,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.user
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.selfMember
 import dev.kord.common.Color
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.ban
@@ -37,6 +40,15 @@ class BanExtension : Extension() {
             action {
                 val providedReason = arguments.reason ?: i18n("bot.words.none")
                 val author = user.asUser()
+
+                val member = member ?: throw DiscordRelayedException(i18n("bot.errors.fetchUser"))
+                val targetMember = arguments.target.asMember(guild!!.id)
+
+                if (!member.asMember().higherThan(targetMember))
+                    throw DiscordRelayedException(i18n("bot.permissions.userTooLow", "kick"))
+
+                if (!guild!!.selfMember().higherThan(targetMember))
+                    throw DiscordRelayedException(i18n("bot.permissions.botTooLow", "kick"))
 
                 guild!!.ban(arguments.target.id) {
                     reason = i18n("bot.ban.reason", author.tag, author.id, providedReason)

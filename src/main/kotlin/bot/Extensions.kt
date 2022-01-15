@@ -3,6 +3,7 @@ package bot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.types.PublicInteractionContext
 import com.kotlindiscord.kord.extensions.utils.createdAt
+import com.kotlindiscord.kord.extensions.utils.getTopRole
 import dev.kord.common.Color
 import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.entity.Icon
@@ -129,3 +130,8 @@ suspend fun CommandContext.i18nPluralize(key: String, count: Int) =
 suspend fun Member.getColor(): Color? = roles.toList()
     .toSortedSet(Comparator.comparing { -it.rawPosition })
     .firstOrNull { it.color.rgb != 0 }?.color
+
+/** Check if this member is above another member in the role hierarchy */
+suspend fun Member.higherThan(otherMember: Member) =
+    (getTopRole()?.rawPosition ?: Int.MAX_VALUE) < (otherMember.getTopRole()?.rawPosition ?: Int.MAX_VALUE)
+            && guild.asGuild().ownerId != otherMember.id
