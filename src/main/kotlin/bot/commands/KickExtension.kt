@@ -4,7 +4,7 @@ package bot.commands
 
 import bot.WARNING
 import bot.configureAuthor
-import bot.higherThan
+import bot.canManage
 import bot.i18n
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.checks.anyGuild
@@ -15,7 +15,6 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.user
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
-import com.kotlindiscord.kord.extensions.utils.getTopRole
 import com.kotlindiscord.kord.extensions.utils.selfMember
 import dev.kord.common.Color
 import dev.kord.common.entity.Permission
@@ -43,10 +42,10 @@ class KickExtension : Extension() {
                 val member = member ?: throw DiscordRelayedException(i18n("bot.errors.fetchUser"))
                 val targetMember = arguments.target.asMember(guild!!.id)
 
-                if (!member.asMember().higherThan(targetMember))
+                if (!member.asMember().canManage(targetMember))
                     throw DiscordRelayedException(i18n("bot.permissions.userTooLow", "ban"))
 
-                if (!guild!!.selfMember().higherThan(targetMember))
+                if (!guild!!.selfMember().canManage(targetMember))
                     throw DiscordRelayedException(i18n("bot.permissions.botTooLow", "ban"))
 
                 targetMember.kick(i18n("bot.kick.reason", author.tag, author.id, reason))
@@ -58,7 +57,7 @@ class KickExtension : Extension() {
                         configureAuthor(author)
                         color = Color.WARNING
                         description = i18n("bot.kick.embed",
-                            target.tag, target.id, reason)
+                            target.tag, target.id.value, reason)
                     }
                 }
             }

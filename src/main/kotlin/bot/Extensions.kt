@@ -131,7 +131,10 @@ suspend fun Member.getColor(): Color? = roles.toList()
     .toSortedSet(Comparator.comparing { -it.rawPosition })
     .firstOrNull { it.color.rgb != 0 }?.color
 
-/** Check if this member is above another member in the role hierarchy */
-suspend fun Member.higherThan(otherMember: Member) =
-    (getTopRole()?.rawPosition ?: Int.MAX_VALUE) < (otherMember.getTopRole()?.rawPosition ?: Int.MAX_VALUE)
+/** Check if this member is above another member in the role hierarchy. Does not check for permissions. */
+suspend fun Member.canManage(otherMember: Member): Boolean {
+    val ownerId = guild.asGuild().ownerId
+    if (id == ownerId) return true
+    return (getTopRole()?.rawPosition ?: Int.MIN_VALUE) > (otherMember.getTopRole()?.rawPosition ?: Int.MIN_VALUE)
             && guild.asGuild().ownerId != otherMember.id
+}

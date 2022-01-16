@@ -77,7 +77,7 @@ class PurgeExtension : Extension() {
                             val strMessages = i18n("bot.words.message.pluralized")
                             name = i18n("bot.purge.embed.topAuthors")
                             value = authors.joinToString("\n")
-                            { "• <@${it.value}>: ${it.key} ${if (it.key == 1) strMessage else strMessages}" }
+                            { "• <@${it.value.value}>: ${it.key} ${if (it.key == 1) strMessage else strMessages}" }
                         }
                     }
                 }

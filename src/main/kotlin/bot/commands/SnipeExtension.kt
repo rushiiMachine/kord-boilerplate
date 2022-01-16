@@ -96,8 +96,6 @@ class SnipeExtension : Extension() {
         if (lastFlush + 1.minutes > now) return
         lastFlush = now
 
-        kordLogger.info("flushed")
-
         val iter = messageCache.iterator()
         while (iter.hasNext()) {
             val list = iter.next().value
