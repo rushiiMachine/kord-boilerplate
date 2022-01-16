@@ -51,7 +51,7 @@ class BanExtension : Extension() {
                     throw DiscordRelayedException(i18n("bot.permissions.botTooLow", "kick"))
 
                 guild!!.ban(arguments.target.id) {
-                    reason = i18n("bot.ban.reason", author.tag, author.id, providedReason)
+                    reason = i18n("bot.ban.reason", author.tag, author.id.value, providedReason)
                     deleteMessagesDays = arguments.deleteMessages?.toInt()
                 }
 

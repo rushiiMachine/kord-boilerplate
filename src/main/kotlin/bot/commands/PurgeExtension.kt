@@ -46,7 +46,7 @@ class PurgeExtension : Extension() {
                 val (messages, oldMessages) = channel.getMessagesBefore(Snowflake.max, arguments.count).toList()
                     .partition { it.timestamp > limit }
 
-                val reason = i18n("bot.purge.reason", author.tag, author.id, providedReason)
+                val reason = i18n("bot.purge.reason", author.tag, author.id.value, providedReason)
                 if (messages.size == 1)
                     channel.deleteMessage(messages.first().id, reason)
                 else if (messages.size > 1) {

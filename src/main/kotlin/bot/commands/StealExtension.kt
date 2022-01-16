@@ -3,6 +3,7 @@ package bot.commands
 import bot.i18n
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.checks.anyGuild
+import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.defaultingBoolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
@@ -38,6 +39,7 @@ class StealExtension : Extension() {
 
             check {
                 anyGuild()
+                hasPermission(Permission.ManageEmojis)
             }
 
             action {

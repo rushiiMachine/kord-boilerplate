@@ -48,7 +48,7 @@ class KickExtension : Extension() {
                 if (!guild!!.selfMember().canManage(targetMember))
                     throw DiscordRelayedException(i18n("bot.permissions.botTooLow", "ban"))
 
-                targetMember.kick(i18n("bot.kick.reason", author.tag, author.id, reason))
+                targetMember.kick(i18n("bot.kick.reason", author.tag, author.id.value, reason))
 
                 respond {
                     val target = arguments.target
