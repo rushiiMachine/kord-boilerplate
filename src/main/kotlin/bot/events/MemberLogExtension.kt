@@ -6,6 +6,7 @@ import bot.discord
 import bot.embedColorFromUser
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.utils.createdAt
 import dev.kord.common.Color
 import dev.kord.common.entity.Snowflake
@@ -27,18 +28,31 @@ class MemberLogExtension : Extension() {
     private val channelId = System.getProperty("MEMBER_LOG_CHANNEL_ID").toLongOrNull()
         ?: error("Failed to parse member log channel id in config. Please provide a valid id.")
 
-    private suspend fun generateLog(user: User, targetChannel: TextChannel, joinedAt: Instant?) {
+    private suspend fun generateLog(
+        user: User,
+        targetChannel: TextChannel,
+        joinedAt: Instant?,
+        translations: TranslationsProvider,
+    ) {
         targetChannel.createEmbed {
             color = if (joinedAt != null) embedColorFromUser(user) else Color.NO_ACTION
             configureAuthor(user)
             footer {
-                text = if (joinedAt != null) "User joined" else "User left"
+                text = if (joinedAt != null)
+                    translations.translate("bot.memberlog.joined")
+                else
+                    translations.translate("bot.memberlog.left")
             }
-            description = """
-                • User: ${user.mention} `${user.tag}` (${user.id})
-                • Created: ${user.createdAt.discord}
-                ${if (joinedAt == null) "• Left ${Clock.System.now().discord}" else "• Joined ${joinedAt.discord}"}
-            """.trimIndent()
+
+            description = if (joinedAt == null)
+                translations.translate("bot.memberlog.leaveEmbed",
+                    "kordex",
+                    arrayOf(user.mention, user.id.value, user.createdAt.discord, Clock.System.now().discord)
+                )
+            else translations.translate("bot.memberlog.joinEmbed",
+                "kordex",
+                arrayOf(user.mention, user.id.value, user.createdAt.discord, joinedAt.discord)
+            )
         }
     }
 
@@ -51,13 +65,13 @@ class MemberLogExtension : Extension() {
 
         event<MemberJoinEvent> {
             action {
-                generateLog(event.member.asUser(), channel, event.member.joinedAt)
+                generateLog(event.member.asUser(), channel, event.member.joinedAt, translationsProvider)
             }
         }
 
         event<MemberLeaveEvent> {
             action {
-                generateLog(event.user, channel, null)
+                generateLog(event.user, channel, null, translationsProvider)
             }
         }
     }
