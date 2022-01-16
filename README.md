@@ -17,19 +17,22 @@ here [here](https://github.com/DiamondMiner88/kord-boilerplate/issues)
 - Reaction roles (soon)
 
 ### Ban/Kick
-![Kick extension](./.github/res/kick.png)
+![Kick command](./.github/res/kick.png)
 
 ### User lookup
-![User extension](./.github/res/user.png)
+![User command](./.github/res/user.png)
 
 ### Member log
 ![Member log](./.github/res/member_log.png)
 
 ### Purge
-![Purge extension](./.github/res/purge.png)
+![Purge command](./.github/res/purge.png)
+
+### Snipe
+![Snipe command](./.github/res/snipe.png)
 
 ### Echo
-![Echo extension](./.github/res/echo.png)
+![Echo command](./.github/res/echo.png)
 
 ### Configured logger
 ![Logger](./.github/res/logger.png)
