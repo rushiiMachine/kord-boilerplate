@@ -30,8 +30,6 @@ suspend fun main() {
     val bot = ExtensibleBot(System.getProperty("TOKEN")) {
         intents(false) {
             +Intent.Guilds
-            +Intent.GuildMembers
-            +Intent.GuildMessages
         }
 
         extensions {

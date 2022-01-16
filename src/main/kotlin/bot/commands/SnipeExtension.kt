@@ -12,6 +12,7 @@ import dev.kord.core.entity.User
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.event.message.MessageDeleteEvent
 import dev.kord.core.kordLogger
+import dev.kord.gateway.Intent
 import dev.kord.rest.builder.message.create.embed
 import kotlinx.datetime.Clock
 import java.util.*
@@ -26,6 +27,8 @@ class SnipeExtension : Extension() {
     private val messageCache = hashMapOf<ULong, LinkedList<CachedMessage>>()
 
     override suspend fun setup() {
+        intents += Intent.GuildMessages
+
         publicSlashCommand {
             name = "snipe"
             description = "Retrieve the last deleted message within the last minute"

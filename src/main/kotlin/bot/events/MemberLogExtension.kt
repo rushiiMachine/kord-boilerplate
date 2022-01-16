@@ -15,9 +15,12 @@ import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.guild.MemberLeaveEvent
 import dev.kord.core.supplier.EntitySupplyStrategy
+import dev.kord.gateway.Intent
+import dev.kord.gateway.PrivilegedIntent
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
+@OptIn(PrivilegedIntent::class)
 class MemberLogExtension : Extension() {
     override val name = "memberLog"
 
@@ -40,6 +43,8 @@ class MemberLogExtension : Extension() {
     }
 
     override suspend fun setup() {
+        intents += Intent.GuildMembers
+
         val channel =
             kord.getChannelOf<TextChannel>(Snowflake(channelId), EntitySupplyStrategy.cacheWithCachingRestFallback)
                 ?: error("Failed to fetch member log channel. Please provide a valid text channel id.")
