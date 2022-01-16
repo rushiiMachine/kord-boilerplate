@@ -31,6 +31,7 @@ suspend fun main() {
         intents(false) {
             +Intent.Guilds
             +Intent.GuildMembers
+            +Intent.GuildMessages
         }
 
         extensions {
@@ -39,6 +40,7 @@ suspend fun main() {
             add(::KickExtension)
             add(::PurgeExtension)
             add(::UserExtension)
+            add(::SnipeExtension)
 
             add(::MemberLogExtension)
             add(::ReadyExtension)
