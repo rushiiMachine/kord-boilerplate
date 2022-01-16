@@ -47,7 +47,11 @@ class UnbanExtension : Extension() {
                         author.id.value,
                         arguments.reason ?: i18n("bot.words.none")
                     )
-                    guild!!.unban(Snowflake(id), reason)
+                    try {
+                        guild!!.unban(Snowflake(id), reason)
+                    } catch (_: Throwable) {
+                        throw DiscordRelayedException(i18n("bot.unban.errors.alreadyUnbanned"))
+                    }
 
                     embed {
                         configureAuthor(user.asUser())
