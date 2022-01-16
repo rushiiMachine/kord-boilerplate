@@ -40,6 +40,7 @@ suspend fun main() {
             add(::UserExtension)
             add(::SnipeExtension)
             add(::StealExtension)
+            add(::UnbanExtension)
 
             add(::MemberLogExtension)
             add(::ReadyExtension)
