@@ -3,8 +3,8 @@
 package bot.commands
 
 import bot.ERROR
-import bot.configureAuthor
 import bot.canManage
+import bot.configureAuthor
 import bot.i18n
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.checks.anyGuild
@@ -43,6 +43,9 @@ class BanExtension : Extension() {
 
                 val member = member ?: throw DiscordRelayedException(i18n("bot.errors.fetchUser"))
                 val targetMember = arguments.target.asMember(guild!!.id)
+
+                if (targetMember.id == channel.kord.selfId)
+                    throw DiscordRelayedException(i18n("bot.ban.errors.self"))
 
                 if (!member.asMember().canManage(targetMember))
                     throw DiscordRelayedException(i18n("bot.permissions.userTooLow", "kick"))
