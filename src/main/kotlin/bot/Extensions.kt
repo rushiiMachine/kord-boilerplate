@@ -72,7 +72,7 @@ fun User.displayAvatar(size: Image.Size = Image.Size.Size64, format: Image.Forma
  */
 fun EmbedBuilder.configureAuthor(user: User) {
     author {
-        name = "${user.tag} (${user.id})"
+        name = "${user.tag} (${user.id.value})"
         icon = user.displayAvatar()
     }
 }

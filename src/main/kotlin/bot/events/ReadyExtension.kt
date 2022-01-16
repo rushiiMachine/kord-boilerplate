@@ -15,7 +15,7 @@ class ReadyExtension : Extension() {
                 val self = kord.getSelf()
                 val count = kord.guilds.toList().size
 
-                kordLogger.info("Logged in as ${self.tag} (${self.id}). Watching $count servers.")
+                kordLogger.info("Logged in as ${self.tag} (${self.id.value}). Watching $count servers.")
                 kord.editPresence {
                     watching("$count servers")
                 }

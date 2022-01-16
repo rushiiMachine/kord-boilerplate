@@ -58,7 +58,7 @@ class UserExtension : Extension() {
                         field {
                             name = i18n("bot.user.embed.user.header")
                             value = i18n("bot.user.embed.user.content",
-                                target.tag, target.id, target.createdAt.discord, target.createdAt.discordRelative)
+                                target.id.value, target.tag, target.createdAt.discord, target.createdAt.discordRelative)
                         }
 
                         if (member != null) field {
