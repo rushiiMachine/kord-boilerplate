@@ -1,17 +1,15 @@
 package bot
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.types.PublicInteractionContext
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.utils.createdAt
 import com.kotlindiscord.kord.extensions.utils.getTopRole
 import dev.kord.common.Color
-import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.entity.Icon
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.User
 import dev.kord.rest.Image
 import dev.kord.rest.builder.message.EmbedBuilder
-import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import kotlinx.coroutines.flow.toList
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -44,17 +42,21 @@ fun embedColorFromUser(user: User): Color {
     }
 }
 
+/**
+ * Convert to the default long discord timestamp
+ */
 val Instant.discord: String
     get() = "<t:${epochSeconds}>"
 
+/**
+ * Convert to the relative discord timestamp
+ */
 val Instant.discordRelative: String
     get() = "<t:${epochSeconds}:R>"
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun condStr(condition: Boolean, value: String?): String = if (condition) value ?: "null" else ""
-
 /** Invokes callback to make lazy string if value not null, else returns empty string */
-suspend fun <T> condStr(value: T?, lazy: suspend (T) -> String): String = if (value != null) lazy.invoke(value) else ""
+suspend fun <T> conditionalLazy(value: T?, lazy: suspend (T) -> String): String =
+    if (value != null) lazy.invoke(value) else ""
 
 /**
  * Display avatar; their avatar or the default avatar
@@ -77,20 +79,6 @@ fun EmbedBuilder.configureAuthor(user: User) {
     }
 }
 
-/** Follow up with a message returning void */
-suspend inline fun PublicInteractionContext.respondV(
-    builder: FollowupMessageCreateBuilder.() -> Unit,
-) {
-    interactionResponse.followUp(builder)
-}
-
-/** Follow up with an ephemeral message returning void */
-suspend inline fun PublicInteractionContext.respondEV(
-    builder: FollowupMessageCreateBuilder.() -> Unit,
-) {
-    interactionResponse.followUp(builder)
-}
-
 /** Wrap a string in a single-line codeblock */
 @Suppress("NOTHING_TO_INLINE")
 inline fun code(str: String?) = "`${str}`"
@@ -103,8 +91,12 @@ inline fun code(str: String?, default: String) = if (str != null) code(str) else
 fun code(strings: List<String>?, default: String) =
     if (strings == null || strings.isEmpty()) default else strings.joinToString { code(it) }
 
-/** Join a list together or default if list is empty */
-fun joinList(list: List<String>, default: String) = if (list.isEmpty()) default else list.joinToString()
+/**
+ * Join a string together or use default value if list empty
+ * @param default Default value
+ */
+fun <T> List<T>.joinToStringDefault(default: String) =
+    if (isEmpty()) default else joinToString()
 
 /** Shortcut for Icon.cdnUrl.toUrl { options } */
 fun Icon.toUrl(size: Image.Size = Image.Size.Size64, format: Image.Format = Image.Format.PNG): String = cdnUrl.toUrl {
@@ -112,15 +104,13 @@ fun Icon.toUrl(size: Image.Size = Image.Size.Size64, format: Image.Format = Imag
     this.format = format
 }
 
-/** Pluralize the string if count is not 1 */
-//fun String.pluralize(count: Int): String {
-//    return if (count != 1)
-//        this.plus("s")
-//    else this
-//}
+/* Shortcut for translations */
+suspend fun CommandContext.i18n(key: String, vararg replacements: Any?) =
+    translate(key, "bot", arrayOf(*replacements))
 
 /* Shortcut for translations */
-suspend fun CommandContext.i18n(key: String, vararg replacements: Any?) = translate(key, arrayOf(*replacements))
+suspend fun TranslationsProvider.i18n(key: String, vararg replacements: Any?) =
+    translate(key, "bot", arrayOf(*replacements))
 
 /* Pluralize a string from translations. Targets key or key + ".pluralized" if plural */
 suspend fun CommandContext.i18nPluralize(key: String, count: Int) =

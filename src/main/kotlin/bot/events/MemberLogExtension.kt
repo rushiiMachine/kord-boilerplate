@@ -1,9 +1,6 @@
 package bot.events
 
-import bot.NO_ACTION
-import bot.configureAuthor
-import bot.discord
-import bot.embedColorFromUser
+import bot.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
@@ -38,20 +35,21 @@ class MemberLogExtension : Extension() {
             color = if (joinedAt != null) embedColorFromUser(user) else Color.NO_ACTION
             configureAuthor(user)
             footer {
-                text = if (joinedAt != null)
-                    translations.translate("bot.memberlog.joined")
-                else
-                    translations.translate("bot.memberlog.left")
+                text = translations.i18n("bot.memberlog.${if (joinedAt != null) "joined" else "left"}")
             }
 
             description = if (joinedAt == null)
-                translations.translate("bot.memberlog.leaveEmbed",
-                    "kordex",
-                    arrayOf(user.mention, user.id.value, user.createdAt.discord, Clock.System.now().discord)
+                translations.i18n("bot.memberlog.leaveEmbed",
+                    user.mention,
+                    user.id.value,
+                    user.createdAt.discord,
+                    Clock.System.now().discord
                 )
-            else translations.translate("bot.memberlog.joinEmbed",
-                "kordex",
-                arrayOf(user.mention, user.id.value, user.createdAt.discord, joinedAt.discord)
+            else translations.i18n("bot.memberlog.joinEmbed",
+                user.mention,
+                user.id.value,
+                user.createdAt.discord,
+                joinedAt.discord
             )
         }
     }

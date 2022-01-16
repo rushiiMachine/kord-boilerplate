@@ -64,26 +64,29 @@ class UserExtension : Extension() {
                         if (member != null) field {
                             name = i18n("bot.user.embed.member.header")
 
-                            val strNone = i18n("bot.words.none")
+                            val noneI18n = i18n("bot.words.none")
                             value = i18n("bot.user.embed.member.content",
                                 code(member.nickname, value),
-                                joinList(member.roles.toList().map(RoleBehavior::mention), strNone),
+                                member.roles
+                                    .toList()
+                                    .map(RoleBehavior::mention)
+                                    .joinToStringDefault(noneI18n),
                                 member.joinedAt.discord,
                                 member.joinedAt.discordRelative
                             )
 
-                            value += condStr(member.premiumSince) {
+                            value += conditionalLazy(member.premiumSince) {
                                 i18n("bot.user.embed.member.content.boosting",
                                     it.discord,
                                     it.discordRelative)
                             }
 
-                            value += condStr(member.getColor()) {
+                            value += conditionalLazy(member.getColor()) {
                                 i18n("bot.user.embed.member.content.color",
                                     it.rgb.toString(16))
                             }
 
-                            value += condStr(member.memberAvatar) {
+                            value += conditionalLazy(member.memberAvatar) {
                                 i18n("bot.user.embed.member.content.avatar",
                                     it.toUrl(Image.Size.Size128))
                             }
