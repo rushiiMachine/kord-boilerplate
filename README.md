@@ -12,7 +12,7 @@ here [here](https://github.com/DiamondMiner88/kord-boilerplate/issues)
 
 - .env Config
 - I18n support
-- [Exposed](https://github.com/JetBrains/Exposed) SQL framework integration (soon)
+- SQLite db with the [Exposed](https://github.com/JetBrains/Exposed) SQL framework
 - Button roles (soon)
 - Reaction roles (soon)
 

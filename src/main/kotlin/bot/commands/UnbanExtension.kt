@@ -20,7 +20,7 @@ class UnbanExtension : Extension() {
     override val name = "unban"
 
     override suspend fun setup() {
-        publicSlashCommand(::EchoArguments) {
+        publicSlashCommand(::UnbanArguments) {
             name = "unban"
             description = "Unban a user by id"
             requireBotPermissions(Permission.BanMembers)
@@ -67,7 +67,7 @@ class UnbanExtension : Extension() {
         }
     }
 
-    inner class EchoArguments : Arguments() {
+    inner class UnbanArguments : Arguments() {
         val id by string("id", "The target user's id")
         val reason by optionalString("reason", "Reason for unbanning this user")
     }

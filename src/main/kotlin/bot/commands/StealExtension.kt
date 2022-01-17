@@ -14,6 +14,7 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.createEmoji
 import dev.kord.rest.Image
+import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.KtorRequestException
 import io.ktor.client.*
 import io.ktor.client.features.*
@@ -32,7 +33,7 @@ class StealExtension : Extension() {
     private val emojiIdRegex = Regex("(\\d{16,20})")
 
     override suspend fun setup() {
-        publicSlashCommand(::EchoArguments) {
+        publicSlashCommand(::StealArguments) {
             name = "steal"
             description = "Clone an emoji or create from url."
             requireBotPermissions(Permission.ManageEmojis)
@@ -110,7 +111,7 @@ class StealExtension : Extension() {
                                 reason = i18n("bot.steal.reason", author.tag, author.id.value)
                             }
                         } catch (e: KtorRequestException) {
-                            if (e.error?.code?.code == 30008)
+                            if (e.error?.code == JsonErrorCode.MaxEmojis || e.error?.code == JsonErrorCode.MaxAnimatedEmojis)
                                 throw DiscordRelayedException(i18n("bot.steal.errors.maxEmojis"))
                             throw e
                         }
@@ -125,7 +126,7 @@ class StealExtension : Extension() {
         }
     }
 
-    inner class EchoArguments : Arguments() {
+    inner class StealArguments : Arguments() {
         val name by string("name", "The name for the cloned emoji") { _, value ->
             if (value.length < 2 || value.length > 32)
                 throw DiscordRelayedException(i18n("bot.steal.errors.nameLength"))

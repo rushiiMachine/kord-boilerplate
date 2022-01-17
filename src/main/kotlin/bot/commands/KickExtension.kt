@@ -69,7 +69,6 @@ class KickExtension : Extension() {
 
     inner class KickArgs : Arguments() {
         val target by user("target", "User to kick")
-
         val reason by optionalString("reason", "Kick reason")
     }
 }

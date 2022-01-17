@@ -1,6 +1,7 @@
 package bot
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.events.EventContext
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.utils.createdAt
 import com.kotlindiscord.kord.extensions.utils.getTopRole
@@ -8,6 +9,7 @@ import dev.kord.common.Color
 import dev.kord.core.entity.Icon
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.User
+import dev.kord.core.event.Event
 import dev.kord.rest.Image
 import dev.kord.rest.builder.message.EmbedBuilder
 import kotlinx.coroutines.flow.toList
@@ -109,6 +111,10 @@ suspend fun CommandContext.i18n(key: String, vararg replacements: Any?) =
     translate(key, "bot", arrayOf(*replacements))
 
 /* Shortcut for translations */
+suspend fun <T : Event> EventContext<T>.i18n(key: String, vararg replacements: Any?) =
+    translate(key, "bot", arrayOf(*replacements))
+
+/* Shortcut for translations */
 suspend fun TranslationsProvider.i18n(key: String, vararg replacements: Any?) =
     translate(key, "bot", arrayOf(*replacements))
 
@@ -125,6 +131,6 @@ suspend fun Member.getColor(): Color? = roles.toList()
 suspend fun Member.canManage(otherMember: Member): Boolean {
     val ownerId = guild.asGuild().ownerId
     if (id == ownerId) return true
-    return (getTopRole()?.rawPosition ?: Int.MIN_VALUE) > (otherMember.getTopRole()?.rawPosition ?: Int.MIN_VALUE)
+    return (getTopRole()?.rawPosition ?: 0) > (otherMember.getTopRole()?.rawPosition ?: 0)
             && guild.asGuild().ownerId != otherMember.id
 }

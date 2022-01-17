@@ -35,7 +35,7 @@ class MemberLogExtension : Extension() {
             color = if (joinedAt != null) embedColorFromUser(user) else Color.NO_ACTION
             configureAuthor(user)
             footer {
-                text = translations.i18n("bot.memberlog.${if (joinedAt != null) "joined" else "left"}")
+                text = translations.i18n(if (joinedAt != null) "bot.memberlog.joined" else "bot.memberlog.left")
             }
 
             description = if (joinedAt == null)

@@ -1,30 +1,43 @@
 package bot
 
 import bot.commands.*
+import bot.database.RoleButtonRecord
 import bot.events.MemberLogExtension
 import bot.events.ReadyExtension
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import dev.kord.core.kordLogger
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import io.github.cdimascio.dotenv.dotenv
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.File
 import kotlin.system.exitProcess
 
 @OptIn(PrivilegedIntent::class)
 @Suppress("BlockingMethodInNonBlockingContext")
 suspend fun main() {
+    // Load env variables
     val env = File(".env")
     if (!env.exists()) {
-        val defaultConfigUri = BanExtension::class.java.classLoader.getResource("config/.env.default")
+        val defaultEnvUri = BanExtension::class.java.classLoader.getResource("config/.env.default")
             ?: error("Failed to load default config from jar")
-        env.writeText(defaultConfigUri.readText())
+        env.writeText(defaultEnvUri.readText())
 
-        println("Config file missing, generating config and exiting...")
+        println(".env Config file missing, generating config and exiting. Please fill out the configuration and restart the application.")
         exitProcess(1)
     }
 
     dotenv {
         systemProperties = true
+    }
+
+    val database = Database.connect("jdbc:sqlite:./data.db")
+
+    transaction {
+        SchemaUtils.createMissingTablesAndColumns(RoleButtonRecord)
     }
 
     val bot = ExtensibleBot(System.getProperty("TOKEN")) {
@@ -41,14 +54,19 @@ suspend fun main() {
             add(::SnipeExtension)
             add(::StealExtension)
             add(::UnbanExtension)
+            add(::RoleButtonsExtension)
 
             add(::MemberLogExtension)
             add(::ReadyExtension)
         }
 
-        // Make all slash commands guild commands
-//        applicationCommandsBuilder.defaultGuild(Snowflake(676284863967526928L))
+        // TODO: fix cache
     }
+
+    Runtime.getRuntime().addShutdownHook(Thread {
+        kordLogger.info("Shutting down...")
+        database.connector().close()
+    })
 
     bot.start()
 }
