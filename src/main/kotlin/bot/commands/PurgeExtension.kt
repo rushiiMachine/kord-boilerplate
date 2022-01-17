@@ -86,14 +86,19 @@ class PurgeExtension : Extension() {
     }
 
     inner class BanArgs : Arguments() {
-        val count by defaultingInt("count",
-            "Number of messages to delete (Range: 1-100)",
-            5,
-            required = true // Require validator to pass
-        ) { _, value ->
-            if (value == 0)
-                throw DiscordRelayedException(i18n("bot.purge.errors.zeroPurged"))
+        val count by defaultingInt {
+            name = "count"
+            description = "Number of messages to delete (Range: 1-100)"
+            defaultValue = 5
+            ignoreErrors = false
+            validate {
+                if (value == 0)
+                    throw DiscordRelayedException(i18n("bot.purge.errors.zeroPurged"))
+            }
         }
-        val reason by optionalString("reason", "Purge reason")
+        val reason by optionalString {
+            name = "reason"
+            description = "Purge reason"
+        }
     }
 }

@@ -294,20 +294,29 @@ class RoleButtonsExtension : Extension() {
     )
 
     inner class StartArguments : Arguments() {
-        val channel by channel(
-            "target_channel",
-            "The channel you want the message to be posted in",
+        val channel by channel {
+            name = "target_channel"
+            description = "The channel you want the message to be posted in"
             requireSameGuild = true
-        )
+        }
         // TODO: restrict to text channel type
     }
 
     inner class AddRoleArguments : Arguments() {
-        val role by role("role", "The role you want to add as an entry")
-        val name by optionalString("name", "The display name of the button")
+        val role by role {
+            name = "role"
+            description = "The role you want to add as an entry"
+        }
+        val name by optionalString {
+            name = "name"
+            description = "The display name of the button"
+        }
     }
 
     inner class RemoveRoleArguments : Arguments() {
-        val name by string("name", "The name of the role-button pair to delete")
+        val name by string {
+            name = "name"
+            description = "The name of the role-button pair to delete"
+        }
     }
 }

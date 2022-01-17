@@ -17,11 +17,11 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-RC2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
 
     implementation("org.slf4j:slf4j-simple:1.7.32")
     implementation("dev.kord:kord-core:0.8.x-SNAPSHOT")
-    implementation("com.kotlindiscord.kord.extensions:kord-extensions:1.5.1-RC1")
+    implementation("com.kotlindiscord.kord.extensions:kord-extensions:1.5.2-SNAPSHOT")
 
     implementation("io.github.cdimascio", "dotenv-kotlin", "6.2.2")
 

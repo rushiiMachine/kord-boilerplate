@@ -127,15 +127,27 @@ class StealExtension : Extension() {
     }
 
     inner class StealArguments : Arguments() {
-        val name by string("name", "The name for the cloned emoji") { _, value ->
-            if (value.length < 2 || value.length > 32)
-                throw DiscordRelayedException(i18n("bot.steal.errors.nameLength"))
+        val name by string {
+            name = "name"
+            description = "The name for the cloned emoji"
+            validate {
+                if (value.length < 2 || value.length > 32)
+                    throw DiscordRelayedException(i18n("bot.steal.errors.nameLength"))
+            }
         }
-        val animated by defaultingBoolean("animated",
-            "Whether to create this emoji as animated (tldr; gif support)",
-            false
-        )
-        val emoji by optionalString("emoji", "Option 1: existing emoji / emoji id")
-        val url by optionalString("url", "Option 2: Target emoji url")
+        val animated by defaultingBoolean {
+            name = "animated"
+            description = "Whether to create this emoji as animated (tldr; gif support)"
+            defaultValue = false
+        }
+
+        val emoji by optionalString {
+            name = "emoji"
+            description = "Option 1: existing emoji / emoji id"
+        }
+        val url by optionalString {
+            name = "url"
+            description = "Option 2: Target emoji url"
+        }
     }
 }

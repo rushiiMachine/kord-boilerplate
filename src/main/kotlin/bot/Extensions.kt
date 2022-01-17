@@ -1,6 +1,7 @@
 package bot
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.converters.builders.ValidationContext
 import com.kotlindiscord.kord.extensions.events.EventContext
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.utils.createdAt
@@ -116,6 +117,10 @@ suspend fun <T : Event> EventContext<T>.i18n(key: String, vararg replacements: A
 
 /* Shortcut for translations */
 suspend fun TranslationsProvider.i18n(key: String, vararg replacements: Any?) =
+    translate(key, "bot", arrayOf(*replacements))
+
+/* Shortcut for translations */
+suspend fun <T> ValidationContext<T>.i18n(key: String, vararg replacements: Any?) =
     translate(key, "bot", arrayOf(*replacements))
 
 /* Pluralize a string from translations. Targets key or key + ".pluralized" if plural */

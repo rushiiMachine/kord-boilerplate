@@ -73,12 +73,19 @@ class BanExtension : Extension() {
     }
 
     inner class BanArgs : Arguments() {
-        val target by user("target", "User to ban")
-        val reason by optionalString("reason", "Ban reason")
-        val deleteMessages by optionalNumberChoice(
-            "delete_messages",
-            "Days of messages to delete from this user",
-            mapOf(
+        val target by user {
+            name = "target"
+            description = "User to ban"
+        }
+
+        val reason by optionalString {
+            name = "reason"
+            description = "Ban reason"
+        }
+        val deleteMessages by optionalNumberChoice {
+            name = "delete_messages"
+            description = "Days of messages to delete from this user"
+            choices = mutableMapOf(
                 "0 Days" to 0,
                 "1 Day" to 1,
                 "2 Days" to 2,
@@ -87,6 +94,7 @@ class BanExtension : Extension() {
                 "5 Days" to 5,
                 "6 Days" to 6,
                 "7 Days" to 7
-            ))
+            )
+        }
     }
 }

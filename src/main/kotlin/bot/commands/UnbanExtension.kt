@@ -68,7 +68,13 @@ class UnbanExtension : Extension() {
     }
 
     inner class UnbanArguments : Arguments() {
-        val id by string("id", "The target user's id")
-        val reason by optionalString("reason", "Reason for unbanning this user")
+        val id by string {
+            name = "id"
+            description = "The target user's id"
+        }
+        val reason by optionalString {
+            name = "reason"
+            description = "Reason for unbanning this user"
+        }
     }
 }

@@ -98,7 +98,13 @@ class UserExtension : Extension() {
     }
 
     inner class UserArgs : Arguments() {
-        val user by optionalUser("user", "A user mention")
-        val id by optionalString("id", "A user's id")
+        val user by optionalUser {
+            name = "user"
+            description = "A user mention"
+        }
+        val id by optionalString {
+            name = "id"
+            description = "A user's id"
+        }
     }
 }

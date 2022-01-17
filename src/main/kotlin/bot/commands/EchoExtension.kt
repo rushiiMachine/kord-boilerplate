@@ -21,6 +21,9 @@ class EchoExtension : Extension() {
     }
 
     inner class EchoArguments : Arguments() {
-        val message by string("message", "The message the bot should say")
+        val message by string {
+            name = "message"
+            description = "The message the bot should say"
+        }
     }
 }

@@ -3,8 +3,8 @@
 package bot.commands
 
 import bot.WARNING
-import bot.configureAuthor
 import bot.canManage
+import bot.configureAuthor
 import bot.i18n
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.checks.anyGuild
@@ -68,7 +68,13 @@ class KickExtension : Extension() {
     }
 
     inner class KickArgs : Arguments() {
-        val target by user("target", "User to kick")
-        val reason by optionalString("reason", "Kick reason")
+        val target by user {
+            name = "target"
+            description = "User to kick"
+        }
+        val reason by optionalString {
+            name = "reason"
+            description = "Kick reason"
+        }
     }
 }
