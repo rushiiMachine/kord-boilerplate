@@ -47,7 +47,7 @@ class UserExtension : Extension() {
                     return@action
                 }
 
-                val member = guild?.getMember(target.id)
+                val member = guild?.getMemberOrNull(target.id)
 
                 respond {
                     embed {
