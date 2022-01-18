@@ -1,6 +1,7 @@
 package bot
 
 import bot.commands.*
+import bot.database.BlockedAttachmentsTable
 import bot.database.RoleButtonRecord
 import bot.events.MemberLogExtension
 import bot.events.ReadyExtension
@@ -37,9 +38,11 @@ suspend fun main() {
     }
 
     val database = Database.connect("jdbc:sqlite:./data.db")
-
     transaction {
-        SchemaUtils.createMissingTablesAndColumns(RoleButtonRecord)
+        SchemaUtils.createMissingTablesAndColumns(
+            RoleButtonRecord,
+            BlockedAttachmentsTable
+        )
     }
 
     val bot = ExtensibleBot(System.getProperty("TOKEN")) {
@@ -57,6 +60,7 @@ suspend fun main() {
             add(::StealExtension)
             add(::UnbanExtension)
             add(::RoleButtonsExtension)
+            add(::AntiAttachmentsExtension)
 
             add(::MemberLogExtension)
             add(::ReadyExtension)
